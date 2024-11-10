@@ -1,178 +1,249 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 export default function Employ() {
-  const [name, setName] = useState("");
-  const [type, setType] = useState("");
-  const [email, setEmail] = useState("");
-  const [dob, setDOB] = useState("");
-  const [gender, setGender] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [editId, setEditId] = useState("-1");
+  const [editId, setEditId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [employeeTasks, setEmployeeTasks] = useState({});
 
-  const [taskDetails, setTaskDetails] = useState({});
-  const [showTaskForm, setShowTaskForm] = useState({});
-
-  const apiUrl = "http://localhost:5000";
+  const apiUrl = "http://localhost:8000";
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  // Assign work to a specific employee
+  const handleAssignWork = (employeeId) => {
     setError("");
-    if (name.trim() !== "" && type.trim() !== "") {
-      axios
-        .post(apiUrl + "/employees", { name, type, email, dob, gender })
-        .then((res) => {
-          setEmployees([...employees, res.data]);
-          setName("");
-          setType("");
-          setEmail("");
-          setDOB("");
-          setGender("");
-          setMessage("Employee added successfully");
+    if (title.trim() && description.trim()) {
+      fetch(`${apiUrl}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, employeeId }), // Include employee ID
+      })
+        .then((res) => res.json())
+        .then((newTask) => {
+          // Update the employee's task list with the new task
+          setEmployeeTasks((prev) => ({
+            ...prev,
+            [employeeId]: prev[employeeId] ? [...prev[employeeId], newTask] : [newTask],
+          }));
+          setTitle("");
+          setDescription("");
+          setMessage("Task added successfully");
           setTimeout(() => setMessage(""), 3000);
         })
-        .catch(() => {
-          setError("Unable to create new employee");
-        });
+        .catch(() => setError("Unable to create Task. Please try again later."));
+    } else {
+      setError("Both title and description are required.");
     }
   };
 
   useEffect(() => {
+    getTasks();
     getEmployees();
   }, []);
 
-  const getEmployees = () => {
-    axios
-      .get(apiUrl + "/employees")
-      .then((res) => {
-        setEmployees(res.data);
+  const getTasks = () => {
+    fetch(`${apiUrl}/tasks`)
+      .then((res) => res.json())
+      .then((data) => {
+        // Group tasks by employeeId
+        const groupedTasks = data.reduce((acc, task) => {
+          const { employeeId } = task;
+          if (!acc[employeeId]) acc[employeeId] = [];
+          acc[employeeId].push(task);
+          return acc;
+        }, {});
+        setEmployeeTasks(groupedTasks);
       })
-      .catch((error) => {
-        console.error("Error fetching employees:", error);
-        setError("Failed to fetch employees. Please check the server.");
-      });
+      .catch(() => setError("Failed to fetch tasks"));
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure want to delete?")) {
-      axios
-        .delete(apiUrl + "/employees/" + id)
-        .then(() => {
-          const updatedEmployees = employees.filter(
-            (employee) => employee._id !== id
-          );
-          setEmployees(updatedEmployees);
+  const getEmployees = () => {
+    fetch(`${apiUrl}/employees`)
+      .then((res) => res.json())
+      .then((data) => setEmployees(data))
+      .catch(() => setError("Failed to fetch employees"));
+  };
+
+  // Handle task edit
+  const handleEdit = (task) => {
+    setEditId(task._id);
+    setEditTitle(task.title);
+    setEditDescription(task.description);
+  };
+
+  // Handle task update
+  const handleUpdate = (employeeId) => {
+    setError("");
+    if (editTitle.trim() && editDescription.trim()) {
+      fetch(apiUrl + "/tasks/" + editId, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: editTitle, description: editDescription }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            // Update the employee's task list with the updated task
+            const updatedTasks = employeeTasks[employeeId].map((task) =>
+              task._id === editId
+                ? { ...task, title: editTitle, description: editDescription }
+                : task
+            );
+            setEmployeeTasks((prev) => ({
+              ...prev,
+              [employeeId]: updatedTasks,
+            }));
+            setEditId(null);
+            setMessage("Task updated successfully");
+            setTimeout(() => setMessage(""), 3000);
+          } else {
+            setError("Unable to update Task. Please try again later.");
+          }
         })
-        .catch(() => {
-          setError("Unable to delete employee");
-        });
+        .catch(() => setError("Unable to update task"));
+    } else {
+      setError("Both title and description are required for update.");
     }
   };
 
-  const handleAssignWork = (id) => {
-    setShowTaskForm((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  // Cancel task edit
+  const handleEditCancel = () => {
+    setEditId(null);
   };
 
-  const handleTaskChange = (id, field, value) => {
-    setTaskDetails((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [field]: value,
-      },
-    }));
-  };
-
-  const handleTaskSubmit = (id) => {
-    const taskData = taskDetails[id];
-    if (taskData && taskData.task && taskData.description) {
-      axios
-        .post(`${apiUrl}/employees/${id}/tasks`, taskData)
+  // Handle task delete
+  const handleDelete = (employeeId, taskId) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      fetch(`${apiUrl}/tasks/${taskId}`, { method: "DELETE" })
         .then(() => {
-          setMessage("Task assigned successfully");
+          // Remove the task from the employee's task list
+          setEmployeeTasks((prev) => ({
+            ...prev,
+            [employeeId]: prev[employeeId].filter((task) => task._id !== taskId),
+          }));
+          setMessage("Task deleted successfully");
           setTimeout(() => setMessage(""), 3000);
-          setShowTaskForm((prev) => ({ ...prev, [id]: false }));
-          setTaskDetails((prev) => ({ ...prev, [id]: { task: "", description: "" } }));
         })
-        .catch(() => {
-          setError("Unable to assign task");
-        });
-    } else {
-      setError("Please fill in both task and description.");
+        .catch(() => setError("Unable to delete task"));
     }
   };
 
   const navigateToEmployeePage = () => {
-    navigate('/employee');
+    navigate("/employee");
   };
 
   return (
     <>
-    <Navbar/>
-      <div className="row mt-3 justify-content-center">
-        <div className="card shadow p-3 mb-3 col-md-6 gradient-bg">
+      <Navbar />
+      <div className="container mt-3">
+        <div className="card shadow p-3 mb-3 col-md-6 mx-auto gradient-bg">
           <h3 className="text-center text-light">Employees</h3>
-
           <ul className="list-group">
             {employees.map((employee) => (
               <li
                 key={employee._id}
                 className="list-group-item d-flex flex-column align-items-center my-2 border border-dark text-center shadow"
               >
-                <div className="text-dark mb-2">
-                  <span className="fw-bold">{employee.name}</span>
-                </div>
+                <span className="fw-bold text-dark mb-2">{employee.name}</span>
+                <input
+                  placeholder="Title"
+                  onChange={(e) => setTitle(e.target.value)}
+                  value={title}
+                  className="form-control"
+                  type="text"
+                />
+                <input
+                  placeholder="Description"
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                  className="form-control"
+                  type="text"
+                />
                 <button
-                  className="btn btnclr text-light"
-                  onClick={() => handleAssignWork(employee._id)}
+                  className="btn btnclr text-light mb-2"
+                  onClick={() => handleAssignWork(employee._id)} // Assign work to this employee
                 >
                   Assign Work
                 </button>
-                {error && <p className="text-danger text-center">{error}</p>}
-      {message && <p className="text-success text-center">{message}</p>}
-
-                {/* Task input form */}
-                {showTaskForm[employee._id] && (
-                  <div className="mt-3 w-100">
-                    <input
-                      type="text"
-                      placeholder="Task"
-                      className="form-control mb-2"
-                      value={taskDetails[employee._id]?.task || ""}
-                      onChange={(e) => handleTaskChange(employee._id, "task", e.target.value)}
-                    />
-                    <textarea
-                      placeholder="Description"
-                      className="form-control mb-2"
-                      value={taskDetails[employee._id]?.description || ""}
-                      onChange={(e) => handleTaskChange(employee._id, "description", e.target.value)}
-                    />
-                    <button
-                      className="btn btn btnclr text-light"
-                      onClick={() => handleTaskSubmit(employee._id)}
-                    >
-                      Save Task
-                    </button>
-                  </div>
-                )}
+                <h4 className="text-dark">Assigned Tasks</h4>
+                
+                <ul className="list-group">
+                  {employeeTasks[employee._id]?.map((task) => (
+                    <li key={task._id} className="list-group-item">
+                      {editId !== task._id ? (
+                        <>
+                          <span className="fw-bold">{task.title}</span>: {task.description}
+                        
+                          <button
+                            className="btn btn-warning ms-2"
+                            onClick={() => handleEdit(task)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn btn-danger ms-2"
+                            onClick={() => handleDelete(employee._id, task._id)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      ) : (
+                        <div className="form-group d-flex gap-2">
+                          <input
+                            placeholder="Title"
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            value={editTitle}
+                            className="form-control"
+                            type="text"
+                          />
+                          <input
+                            placeholder="Description"
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            value={editDescription}
+                            className="form-control"
+                            type="text"
+                          />
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => handleUpdate(employee._id)}
+                          >
+                            Update
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={handleEditCancel}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>
         </div>
+        <div className="container mt-3">
+          {error && <p className="text-danger text-center">{error}</p>}
+          {message && <p className="text-success text-center">{message}</p>}
+        </div>
+        <button
+          onClick={navigateToEmployeePage}
+          className="btn btnclr text-light d-flex justify-content-center mx-auto mb-3"
+        >
+          Add Employee
+        </button>
       </div>
-      <button 
-        onClick={navigateToEmployeePage} 
-        className="btn btnclr text-light d-flex justify-content-center mb-3">
-        Add Employee
-      </button>
-      
     </>
   );
 }

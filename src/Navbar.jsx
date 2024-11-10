@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import logo from './assets/logo.png'; // Replace with the actual path to your logo image
-// Optional: Add a CSS file for custom styling
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ const Navbar = () => {
       {/* Login Button */}
       <div style={styles.rightContainer}>
         <button onClick={handleLoginClick} style={styles.loginButton}>
-         Login
+         Back
         </button>
       </div>
     </nav> 

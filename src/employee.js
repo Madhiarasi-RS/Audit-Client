@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Navbar from "./Navbar";
+import logo from './assets/logo.png'; 
 
 export default function Employ() {
   const [name, setName] = useState("");
@@ -20,9 +20,12 @@ export default function Employ() {
   const [editDob, setEditDOB] = useState("");
   const [editGender, setEditGender] = useState("");
 
-  const apiUrl = "http://localhost:5000";
+  const apiUrl = "http://localhost:8000";
   const navigate = useNavigate();
 
+  const handleLoginClick = () => {
+    navigate('/AdminDashboard'); // Navigates to Login.jsx page
+  };
   const handleSubmit = () => {
     setError("");
     if (name.trim() !== "" && type.trim() !== "") {
@@ -132,13 +135,60 @@ export default function Employ() {
     }
   };
 
-  const handleAssignWork = (id) => {
-    navigate(`/AdminDashboard`, { state: { employeeId: id } });
-  };
+
+// Inline Styles
+const styles = {
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10px 20px',
+    backgroundColor: '#001f3f', // Navy blue color
+    color: '#ffffff',
+  },
+  leftContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  logo: {
+    height: '40px', // Adjust as needed
+    marginRight: '10px',
+  },
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+  },
+  rightContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  loginButton: {
+    padding: '8px 16px',
+    backgroundColor: '#333', // Blue button color
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  },
+};
 
   return (
-    <>
-    <Navbar/>
+    <>  
+     <nav style={styles.navbar}>
+    {/* Logo and Title */}
+    <div style={styles.leftContainer}>
+      <img src={logo} alt="Logo" style={styles.logo} />
+      <h1 style={styles.title}>Audit Governance Platform</h1>
+    </div>
+
+    {/* Login Button */}
+    <div style={styles.rightContainer}>
+      <button onClick={handleLoginClick} style={styles.loginButton}>
+       Back
+      </button>
+    </div>
+  </nav>
       <div className="row mt-3">
         <div className="card gradient-bg shadow p-3 mb-3 ">
           <h3 className="text-light">Add Employee</h3>
