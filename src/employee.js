@@ -191,7 +191,7 @@ const styles = {
   </nav>
       <div className="row mt-3">
         <div className="card gradient-bg shadow p-3 mb-3 ">
-          <h3 className="text-light">Add Employee</h3>
+          <h3 className="text-light">Add Audit Personnel</h3>
           {message && <p className="text-light">{message}</p>}
           <div className="form-group d-flex gap-2 ">
             <input
@@ -238,7 +238,7 @@ const styles = {
       </div>
       <div className="row mt-3 justify-content-center ">
         <div className="card shadow p-3 mb-3 col-md-6 gradient-bg">
-          <h3 className="text-center text-light">Employees</h3>
+          <h3 className="text-center text-light">Audit Personnel</h3>
           <ul className="list-group">
             {employees.map((employee) => (
               <li

@@ -76,7 +76,7 @@ const EmployeeWork = () => {
     <> <Navbar />
     <div style={styles.pageBackground}>
       <div style={styles.container}>
-        <h1>Employee Work Submission</h1>
+        <h1>Audit Personnel Work Submission</h1>
 
         {/* Display the current date and time */}
         <div style={styles.dateTime}>

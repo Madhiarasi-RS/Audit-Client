@@ -63,7 +63,7 @@ const Login = () => {
             e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
           }}
         >
-          <h2 style={styles.cardTitle}>EMPLOYEE</h2>
+          <h2 style={styles.cardTitle}>Audit Personnel</h2>
         </div>
       </div>
     </>

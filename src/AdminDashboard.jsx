@@ -189,7 +189,7 @@ export default function Employ() {
           padding: '20px', // Optional padding for inner content
         }}
       >
-          <h3 className="text-center text-black">Employees</h3>
+          <h3 className="text-center text-black">Audit Personnel</h3>
           <ul className="list-group">
             {employees.map((employee) => (
               <li
@@ -430,7 +430,7 @@ export default function Employ() {
   onMouseOver={(e) => (e.target.style.backgroundColor = '#ff0084')} // Darkens color on hover
   onMouseOut={(e) => (e.target.style.backgroundColor = 'black')}  // Resets color on mouse out
 >
-  Add Employee
+  Add Audit Personnel
 </button>
 
 

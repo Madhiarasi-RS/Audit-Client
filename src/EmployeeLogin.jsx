@@ -36,7 +36,7 @@ const EmployeeLogin = () => {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' , backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
             <form onSubmit={handleLogin} style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '5px', width: '300px',
                 backgroundColor:' #1b1b1b6f', }}>
-                <h2>Employee Login</h2>
+                <h2>Audit Personnel Login</h2>
                 {message && <p style={{ color: message.includes("successful") ? 'green' : 'red' }}>{message}</p>}
                 <div style={{ marginBottom: '15px' }}>
                     <label>Username:</label>
