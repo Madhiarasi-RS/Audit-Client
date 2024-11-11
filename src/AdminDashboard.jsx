@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import auditImage from "../src/assets/audit.jpg";
 
 export default function Employ() {
   const [title, setTitle] = useState("");
@@ -35,25 +36,40 @@ export default function Employ() {
           }));
           setTitle("");
           setDescription("");
-          setMessage("Task added successfully");
+          alert("Task added successfully");
+
+         // Clear the message after 3 seconds
           setTimeout(() => setMessage(""), 3000);
         })
         .catch(() => setError("Unable to create Task. Please try again later."));
     } else {
-      setError("Both title and description are required.");
+      const errorMessage = "Both title and description are required.";
+      alert(errorMessage);
     }
   };
-
   useEffect(() => {
-    getTasks();
+    // Check if tasks are saved in localStorage
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      setEmployeeTasks(JSON.parse(storedTasks));
+    } else {
+      getTasks();
+    }
     getEmployees();
   }, []);
+  
+  // Whenever employeeTasks is updated, save it to localStorage
+  useEffect(() => {
+    if (Object.keys(employeeTasks).length > 0) {
+      localStorage.setItem('tasks', JSON.stringify(employeeTasks));
+    }
+  }, [employeeTasks]);
+  
 
   const getTasks = () => {
     fetch(`${apiUrl}/tasks`)
       .then((res) => res.json())
       .then((data) => {
-        // Group tasks by employeeId
         const groupedTasks = data.reduce((acc, task) => {
           const { employeeId } = task;
           if (!acc[employeeId]) acc[employeeId] = [];
@@ -62,14 +78,13 @@ export default function Employ() {
         }, {});
         setEmployeeTasks(groupedTasks);
       })
-      .catch(() => setError("Failed to fetch tasks"));
+      .catch(() => alert("Failed to fetch tasks"));
   };
-
   const getEmployees = () => {
     fetch(`${apiUrl}/employees`)
       .then((res) => res.json())
       .then((data) => setEmployees(data))
-      .catch(() => setError("Failed to fetch employees"));
+      .catch(() => alert("Failed to fetch employees"));
   };
 
   // Handle task edit
@@ -103,15 +118,15 @@ export default function Employ() {
               [employeeId]: updatedTasks,
             }));
             setEditId(null);
-            setMessage("Task updated successfully");
+            alert("Task updated successfully");
             setTimeout(() => setMessage(""), 3000);
           } else {
-            setError("Unable to update Task. Please try again later.");
+            alert("Unable to update Task. Please try again later.");
           }
         })
-        .catch(() => setError("Unable to update task"));
+        .catch(() => alert("Unable to update task"));
     } else {
-      setError("Both title and description are required for update.");
+      alert(setError("Both title and description are required for update."));
     }
   };
 
@@ -130,10 +145,10 @@ export default function Employ() {
             ...prev,
             [employeeId]: prev[employeeId].filter((task) => task._id !== taskId),
           }));
-          setMessage("Task deleted successfully");
+          alert("Task deleted successfully");
           setTimeout(() => setMessage(""), 3000);
         })
-        .catch(() => setError("Unable to delete task"));
+        .catch(() => alert("Unable to delete task"));
     }
   };
 
@@ -144,38 +159,122 @@ export default function Employ() {
   return (
     <>
       <Navbar />
-      <div className="container mt-3">
-        <div className="card shadow p-3 mb-3 col-md-6 mx-auto gradient-bg">
-          <h3 className="text-center text-light">Employees</h3>
+    <div 
+      className="container mt-3" 
+      style={{ 
+        backgroundImage: `url(${auditImage})`, // Use the imported image here
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        padding: "20px", 
+        borderRadius: "8px", 
+        minHeight: '100%',
+        maxWidth: '100%', // Makes sure the container takes at least the full viewport height
+      }}
+    >
+       <div
+        style={{
+          width: '50%',
+          height: '50%',
+          display: 'flex',
+          marginLeft: '350px',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backdropFilter: 'blur(8px)', // Apply blur effect
+          borderRadius: '8px',
+          padding: '20px', // Optional padding for inner content
+        }}
+      >
+          <h3 className="text-center text-black">Employees</h3>
           <ul className="list-group">
             {employees.map((employee) => (
               <li
-                key={employee._id}
-                className="list-group-item d-flex flex-column align-items-center my-2 border border-dark text-center shadow"
-              >
-                <span className="fw-bold text-dark mb-2">{employee.name}</span>
-                <input
-                  placeholder="Title"
-                  onChange={(e) => setTitle(e.target.value)}
-                  value={title}
-                  className="form-control"
-                  type="text"
-                />
-                <input
-                  placeholder="Description"
-                  onChange={(e) => setDescription(e.target.value)}
-                  value={description}
-                  className="form-control"
-                  type="text"
-                />
-                <button
-                  className="btn btnclr text-light mb-2"
-                  onClick={() => handleAssignWork(employee._id)} // Assign work to this employee
-                >
-                  Assign Work
-                </button>
+              key={employee._id}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '20px',
+                margin: '10px 0',
+                border: '2px solid #343a40', // Dark border color
+                borderRadius: '8px', // Rounded corners
+                backgroundColor: ' #8d9290', // Light background color
+                textAlign: 'center',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow
+                transition: 'transform 0.2s, boxShadow 0.2s', // Smooth transition for hover
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+              }}
+            >
+              <span style={{ color: 'white', fontWeight: '600', marginBottom: '5px', fontSize: '1.5rem' }}>
+                {employee.name}
+              </span>
+              <input
+  placeholder="Title"
+  onChange={(e) => setTitle(e.target.value)}
+  value={title}
+  type="text"
+  style={{
+    width: '100%',
+    padding: '10px',
+    marginBottom: '10px', // Space between inputs
+    border: '1px solid #ced4da', // Light border color
+    borderRadius: '5px', // Rounded corners
+    outline: 'none',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Subtle shadow
+    fontSize: '16px', // Larger font for readability
+  }}
+/>
+
+<input
+  placeholder="Description"
+  onChange={(e) => setDescription(e.target.value)}
+  value={description}
+  type="text"
+  style={{
+    width: '100%',
+    padding: '10px',
+    marginBottom: '10px', // Space below input
+    border: '1px solid #ced4da',
+    borderRadius: '5px',
+    outline: 'none',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    fontSize: '16px',
+  }}
+/>
+
+<br />
+
+<button
+  onClick={() => handleAssignWork(employee._id)} // Assign work to this employee
+  style={{
+    width: '100%',
+    padding: '10px',
+    backgroundColor: 'black', // Primary color
+    color: 'white', // White text color
+    border: 'none',
+    borderRadius: '5px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)', // Button shadow
+    transition: 'background-color 0.3s', // Smooth hover transition
+  }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = '#351616a2')} // Darker shade on hover
+  onMouseLeave={(e) => (e.target.style.backgroundColor = 'black')}
+>
+  Assign Work
+</button>
+<br></br>
                 <h4 className="text-dark">Assigned Tasks</h4>
-                
+                <br></br>
                 <ul className="list-group">
                   {employeeTasks[employee._id]?.map((task) => (
                     <li key={task._id} className="list-group-item">
@@ -184,47 +283,116 @@ export default function Employ() {
                           <span className="fw-bold">{task.title}</span>: {task.description}
                         
                           <button
-                            className="btn btn-warning ms-2"
-                            onClick={() => handleEdit(task)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="btn btn-danger ms-2"
-                            onClick={() => handleDelete(employee._id, task._id)}
-                          >
-                            Delete
-                          </button>
+  onClick={() => handleEdit(task)}
+  style={{
+    backgroundColor: '#00ff91e7', // Warning color for edit
+    color: '#fff', // White text
+    border: 'none',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    marginLeft: '10px', // Spacing between buttons
+    cursor: 'pointer',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Subtle shadow
+    transition: 'background-color 0.3s', // Smooth hover transition
+  }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = '#e0a800')} // Darker shade on hover
+  onMouseLeave={(e) => (e.target.style.backgroundColor = '#00ff91e7')}
+>
+  Edit
+</button>
+
+<button
+  onClick={() => handleDelete(employee._id, task._id)}
+  style={{
+    backgroundColor: '#dc3545', // Danger color for delete
+    color: '#fff', // White text
+    border: 'none',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    marginLeft: '10px',
+    cursor: 'pointer',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    transition: 'background-color 0.3s',
+  }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = '#c82333')} // Darker shade on hover
+  onMouseLeave={(e) => (e.target.style.backgroundColor = '#dc3545')}
+>
+  Delete
+</button>
                         </>
                       ) : (
-                        <div className="form-group d-flex gap-2">
-                          <input
-                            placeholder="Title"
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            value={editTitle}
-                            className="form-control"
-                            type="text"
-                          />
-                          <input
-                            placeholder="Description"
-                            onChange={(e) => setEditDescription(e.target.value)}
-                            value={editDescription}
-                            className="form-control"
-                            type="text"
-                          />
-                          <button
-                            className="btn btn-warning"
-                            onClick={() => handleUpdate(employee._id)}
-                          >
-                            Update
-                          </button>
-                          <button
-                            className="btn btn-danger"
-                            onClick={handleEditCancel}
-                          >
-                            Cancel
-                          </button>
-                        </div>
+                        <div
+                        style={{
+                          display: 'flex',
+                          gap: '8px', // Space between elements
+                          alignItems: 'center',
+                          padding: '10px',
+                          borderRadius: '8px',
+                          backgroundColor: '#626363', // Light background for the edit section
+                          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Subtle shadow
+                        }}
+                      >
+                        <input
+                          placeholder="Title"
+                          onChange={(e) => setEditTitle(e.target.value)}
+                          value={editTitle}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            border: '2px solid black', // Light border
+                            borderRadius: '4px',
+                            fontSize: '14px',
+                          }}
+                          type="text"
+                        />
+                        <input
+                          placeholder="Description"
+                          onChange={(e) => setEditDescription(e.target.value)}
+                          value={editDescription}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            border: '2px solid black',
+                            borderRadius: '4px',
+                            fontSize: '14px',
+                          }}
+                          type="text"
+                        />
+                        <button
+                          onClick={() => handleUpdate(employee._id)}
+                          style={{
+                            backgroundColor: '#00ff91e7', // Yellow for "Update" button
+                            color: '#fff',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                            transition: 'background-color 0.3s',
+                          }}
+                          onMouseEnter={(e) => (e.target.style.backgroundColor = '#e0a800')} // Darker shade on hover
+                          onMouseLeave={(e) => (e.target.style.backgroundColor = '#00ff91e7')}
+                        >
+                          Update
+                        </button>
+                        <button
+                          onClick={handleEditCancel}
+                          style={{
+                            backgroundColor: '#dc3545', // Red for "Cancel" button
+                            color: '#fff',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                            transition: 'background-color 0.3s',
+                          }}
+                          onMouseEnter={(e) => (e.target.style.backgroundColor = '#c82333')} // Darker shade on hover
+                          onMouseLeave={(e) => (e.target.style.backgroundColor = '#dc3545')}
+                        >
+                          Cancel
+                        </button>
+                      </div>
                       )}
                     </li>
                   ))}
@@ -238,11 +406,31 @@ export default function Employ() {
           {message && <p className="text-success text-center">{message}</p>}
         </div>
         <button
-          onClick={navigateToEmployeePage}
-          className="btn btnclr text-light d-flex justify-content-center mx-auto mb-3"
-        >
-          Add Employee
-        </button>
+       onClick={navigateToEmployeePage}
+
+    style={{
+    position: 'absolute',
+    top: '80px',  // Adjust based on your navbar height
+    left: '90%',
+    transform: 'translateX(-50%)',  // Centers the button horizontally
+    zIndex: 10,
+    padding: '10px 20px',  // Adds padding to the button
+    backgroundColor: 'black',  // Button color
+    color: 'white',  // Text color
+    border: 'none',
+    borderRadius: '4px',  // Rounded corners
+    fontSize: '16px',  // Font size
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    transition: 'background-color 0.3s ease',  // Smooth background color change on hover
+  }}
+  onMouseOver={(e) => (e.target.style.backgroundColor = '#351616a2')} // Darkens color on hover
+  onMouseOut={(e) => (e.target.style.backgroundColor = 'black')}  // Resets color on mouse out
+>
+  Add Employee
+</button>
+
+
       </div>
     </>
   );
