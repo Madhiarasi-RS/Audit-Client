@@ -160,16 +160,19 @@ export default function Employ() {
     <>
       <Navbar />
     <div 
-      className="container mt-3" 
+      className="container mt-0" 
       style={{ 
         backgroundImage: `url(${auditImage})`, // Use the imported image here
         backgroundSize: 'cover', 
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed', 
         padding: "20px", 
-        borderRadius: "8px", 
-        minHeight: '100%',
-        maxWidth: '100%', // Makes sure the container takes at least the full viewport height
+        top: 0,
+        left: 0,
+        minHeight: '100vh', // Ensures the container takes the full viewport height
+        maxWidth: '100%', // Ensures the container takes the full viewport width
+        borderRadius: "0px", 
       }}
     >
        <div
