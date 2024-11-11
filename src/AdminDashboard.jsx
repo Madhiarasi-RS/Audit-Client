@@ -288,7 +288,7 @@ export default function Employ() {
                           <button
   onClick={() => handleEdit(task)}
   style={{
-    backgroundColor: '#00ff91e7', // Warning color for edit
+    backgroundColor: 'rgb(12, 40, 51)', // Warning color for edit
     color: '#fff', // White text
     border: 'none',
     padding: '5px 10px',
@@ -298,8 +298,8 @@ export default function Employ() {
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Subtle shadow
     transition: 'background-color 0.3s', // Smooth hover transition
   }}
-  onMouseEnter={(e) => (e.target.style.backgroundColor = '#e0a800')} // Darker shade on hover
-  onMouseLeave={(e) => (e.target.style.backgroundColor = '#00ff91e7')}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = 'Black')} // Darker shade on hover
+  onMouseLeave={(e) => (e.target.style.backgroundColor = 'rgb(12, 40, 51)')}
 >
   Edit
 </button>
@@ -307,7 +307,7 @@ export default function Employ() {
 <button
   onClick={() => handleDelete(employee._id, task._id)}
   style={{
-    backgroundColor: '#dc3545', // Danger color for delete
+    backgroundColor: 'rgb(12, 40, 51)', // Danger color for delete
     color: '#fff', // White text
     border: 'none',
     padding: '5px 10px',
@@ -317,8 +317,8 @@ export default function Employ() {
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     transition: 'background-color 0.3s',
   }}
-  onMouseEnter={(e) => (e.target.style.backgroundColor = '#c82333')} // Darker shade on hover
-  onMouseLeave={(e) => (e.target.style.backgroundColor = '#dc3545')}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = 'Black')} // Darker shade on hover
+  onMouseLeave={(e) => (e.target.style.backgroundColor = 'rgb(12, 40, 51)')}
 >
   Delete
 </button>
@@ -364,7 +364,7 @@ export default function Employ() {
                         <button
                           onClick={() => handleUpdate(employee._id)}
                           style={{
-                            backgroundColor: '#00ff91e7', // Yellow for "Update" button
+                            backgroundColor: 'rgb(6, 67, 92)', // Yellow for "Update" button
                             color: '#fff',
                             border: 'none',
                             padding: '8px 12px',
@@ -373,15 +373,15 @@ export default function Employ() {
                             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                             transition: 'background-color 0.3s',
                           }}
-                          onMouseEnter={(e) => (e.target.style.backgroundColor = '#e0a800')} // Darker shade on hover
-                          onMouseLeave={(e) => (e.target.style.backgroundColor = '#00ff91e7')}
+                          onMouseEnter={(e) => (e.target.style.backgroundColor = 'Black')} // Darker shade on hover
+                          onMouseLeave={(e) => (e.target.style.backgroundColor = 'rgb(6, 67, 92)')}
                         >
                           Update
                         </button>
                         <button
                           onClick={handleEditCancel}
                           style={{
-                            backgroundColor: '#dc3545', // Red for "Cancel" button
+                            backgroundColor: 'rgb(6, 67, 92)', // Red for "Cancel" button
                             color: '#fff',
                             border: 'none',
                             padding: '8px 12px',
@@ -390,8 +390,8 @@ export default function Employ() {
                             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                             transition: 'background-color 0.3s',
                           }}
-                          onMouseEnter={(e) => (e.target.style.backgroundColor = '#c82333')} // Darker shade on hover
-                          onMouseLeave={(e) => (e.target.style.backgroundColor = '#dc3545')}
+                          onMouseEnter={(e) => (e.target.style.backgroundColor = 'Black')} // Darker shade on hover
+                          onMouseLeave={(e) => (e.target.style.backgroundColor = 'rgb(6, 67, 92)')}
                         >
                           Cancel
                         </button>
@@ -414,7 +414,7 @@ export default function Employ() {
     style={{
     position: 'absolute',
     top: '80px',  // Adjust based on your navbar height
-    left: '90%',
+    left: '85%',
     transform: 'translateX(-50%)',  // Centers the button horizontally
     zIndex: 10,
     padding: '10px 20px',  // Adds padding to the button
@@ -427,7 +427,7 @@ export default function Employ() {
     fontWeight: 'bold',
     transition: 'background-color 0.3s ease',  // Smooth background color change on hover
   }}
-  onMouseOver={(e) => (e.target.style.backgroundColor = '#ff0084')} // Darkens color on hover
+  onMouseOver={(e) => (e.target.style.backgroundColor = 'rgb(6, 67, 92)')} // Darkens color on hover
   onMouseOut={(e) => (e.target.style.backgroundColor = 'black')}  // Resets color on mouse out
 >
   Add Audit Personnel

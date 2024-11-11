@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from './assets/logo.png'; 
+import Image from './assets/add.jpg';
+
 
 export default function Employ() {
   const [name, setName] = useState("");
@@ -145,6 +147,7 @@ const styles = {
     padding: '10px 20px',
     backgroundColor: '#001f3f', // Navy blue color
     color: '#ffffff',
+   
   },
   leftContainer: {
     display: 'flex',
@@ -171,10 +174,21 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
   },
+  container: {
+    
+    backgroundImage: `url(${Image})`, // Use the imported image here
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+  },
 };
 
   return (
     <>  
+    <div style={styles.container}>
+
+    
      <nav style={styles.navbar}>
     {/* Logo and Title */}
     <div style={styles.leftContainer}>
@@ -323,6 +337,7 @@ const styles = {
             ))}
           </ul>
         </div>
+      </div>
       </div>
     </>
   );
