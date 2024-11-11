@@ -427,7 +427,7 @@ export default function Employ() {
     fontWeight: 'bold',
     transition: 'background-color 0.3s ease',  // Smooth background color change on hover
   }}
-  onMouseOver={(e) => (e.target.style.backgroundColor = '#351616a2')} // Darkens color on hover
+  onMouseOver={(e) => (e.target.style.backgroundColor = '#ff0084')} // Darkens color on hover
   onMouseOut={(e) => (e.target.style.backgroundColor = 'black')}  // Resets color on mouse out
 >
   Add Employee
