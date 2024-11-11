@@ -147,7 +147,7 @@ const styles = {
     padding: '10px 20px',
     backgroundColor: '#001f3f', // Navy blue color
     color: '#ffffff',
-   
+    
   },
   leftContainer: {
     display: 'flex',
@@ -175,20 +175,21 @@ const styles = {
     fontSize: '16px',
   },
   container: {
-    
+    top: 0,
+    left: 0,
+    minHeight: '100vh', // Ensures the container takes the full viewport height
+    maxWidth: '100%', // Ensures the container takes the full viewport width
     backgroundImage: `url(${Image})`, // Use the imported image here
-        backgroundSize: 'cover', 
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
+    backgroundSize: 'cover', 
+   backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
   },
 };
 
   return (
     <>  
     <div style={styles.container}>
-
-    
      <nav style={styles.navbar}>
     {/* Logo and Title */}
     <div style={styles.leftContainer}>

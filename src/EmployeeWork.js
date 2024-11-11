@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // assuming axios is used for API requests
+import axios from "axios";
 import Navbar from "./Navbar";
 
 const EmployeeWork = () => {
@@ -7,17 +7,48 @@ const EmployeeWork = () => {
   const [tasks, setTasks] = useState(
     Array(8).fill(null).map(() => ({ task: "", proof: null, uploadedAt: null }))
   );
-  const [assignedTasks, setAssignedTasks] = useState([]); // State for assigned tasks from adminDashboard
-  const [attendanceIndicator, setAttendanceIndicator] = useState("red"); // Red for incomplete, green for complete
+  const [assignedTasks, setAssignedTasks] = useState([]);
+  const [attendanceIndicator, setAttendanceIndicator] = useState("red");
 
-  // State for the current date
+  const [employeeTasks, setEmployeeTasks] = useState({});
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Fetch assigned tasks from adminDashboard
+  const apiUrl = "http://localhost:8000"; // Define apiUrl or use a specific URL
+
+  useEffect(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    if (storedTasks) {
+      setEmployeeTasks(JSON.parse(storedTasks));
+    } else {
+      getTasks();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(employeeTasks).length > 0) {
+      localStorage.setItem("tasks", JSON.stringify(employeeTasks));
+    }
+  }, [employeeTasks]);
+
+  const getTasks = () => {
+    fetch(`${apiUrl}/tasks`)
+      .then((res) => res.json())
+      .then((data) => {
+        const groupedTasks = data.reduce((acc, task) => {
+          const { employeeId } = task;
+          if (!acc[employeeId]) acc[employeeId] = [];
+          acc[employeeId].push(task);
+          return acc;
+        }, {});
+        setEmployeeTasks(groupedTasks);
+      })
+      .catch(() => alert("Failed to fetch tasks"));
+  };
+
   useEffect(() => {
     const fetchAssignedTasks = async () => {
       try {
-        const response = await axios.get('/api/adminDashboard/assignedTasks'); // Adjust URL as needed
+        const response = await axios.get(`${apiUrl}/api/adminDashboard/assignedTasks`);
         setAssignedTasks(response.data);
       } catch (error) {
         console.error("Error fetching assigned tasks:", error);
@@ -27,29 +58,25 @@ const EmployeeWork = () => {
     fetchAssignedTasks();
   }, []);
 
-  // Update the current date and time every second
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDate(new Date());
     }, 1000);
-    return () => clearInterval(interval); // Clean up the interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
-  // Handle input change for tasks and record upload time
   const handleTaskChange = (index, task) => {
     const newTasks = [...tasks];
     newTasks[index] = { ...newTasks[index], task, uploadedAt: new Date() };
     setTasks(newTasks);
   };
 
-  // Handle file upload for proof and record upload time
   const handleFileChange = (index, file) => {
     const newTasks = [...tasks];
     newTasks[index] = { ...newTasks[index], proof: file, uploadedAt: new Date() };
     setTasks(newTasks);
   };
 
-  // Handle submission
   const handleSubmit = () => {
     const allTasksCompleted = tasks.every((task) => task.task !== "" && task.proof !== null);
 
@@ -62,92 +89,88 @@ const EmployeeWork = () => {
     }
   };
 
-  // Format the current date and time
   const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
 
-  // Get the real-time hour for the label (Hour 1 starts at the current hour, Hour 2 is +1, etc.)
   const getHourLabel = (hourIndex) => {
     const currentHour = currentDate.getHours();
-    const labelHour = (currentHour + hourIndex) % 24; // Handle 24-hour wrap-around
+    const labelHour = (currentHour + hourIndex) % 24;
     return labelHour;
   };
 
   return (
-    <> <Navbar />
-    <div style={styles.pageBackground}>
-      <div style={styles.container}>
-        <h1>Audit Personnel Work Submission</h1>
+    <>
+      <Navbar />
+      <div style={styles.pageBackground}>
+        <div style={styles.container}>
+          <h1>Audit Personnel Work Submission</h1>
+          <div style={styles.dateTime}>
+            <p>Current Date and Time: {formattedDate}</p>
+          </div>
 
-        {/* Display the current date and time */}
-        <div style={styles.dateTime}>
-          <p>Current Date and Time: {formattedDate}</p>
-        </div>
+          <div style={styles.assignedTasks}>
+            <h2>Assigned Tasks</h2>
+            {assignedTasks.length > 0 ? (
+              assignedTasks.map((task) => (
+                <li key={task._id} className="list-group-item">
+                  <span className="fw-bold">{task.title}</span>
+                </li>
+              ))
+            ) : (
+              <p>No tasks assigned.</p>
+            )}
+          </div>
 
-        {/* Display assigned tasks */}
-        <div style={styles.assignedTasks}>
-          <h2>Assigned Tasks</h2>
-          {assignedTasks.length > 0 ? (
-            assignedTasks.map((task, index) => (
-              <div key={index} style={styles.taskItem}>
-                <p><strong>Task {index + 1}:</strong> {task.description}</p>
+          <div style={styles.taskContainer}>
+            {tasks.map((taskObj, index) => (
+              <div key={index} style={styles.taskRow}>
+                <label>Hour {index + 1}</label>
+                <input
+                  type="text"
+                  placeholder={`Task for Hour ${index + 1}`}
+                  value={taskObj.task}
+                  onChange={(e) => handleTaskChange(index, e.target.value)}
+                  style={styles.input}
+                />
+                <input
+                  type="file"
+                  accept=".png,.jpg,.jpeg,.pdf,.docx,.xlsx"
+                  onChange={(e) => handleFileChange(index, e.target.files[0])}
+                  style={styles.fileInput}
+                />
+                {taskObj.uploadedAt && (
+                  <span style={styles.uploadTime}>
+                    Uploaded at: {taskObj.uploadedAt.toLocaleTimeString()}
+                  </span>
+                )}
               </div>
-            ))
-          ) : (
-            <p>No tasks assigned.</p>
-          )}
-        </div>
+            ))}
+          </div>
 
-        {/* Task inputs for each hour */}
-        <div style={styles.taskContainer}>
-          {tasks.map((taskObj, index) => (
-            <div key={index} style={styles.taskRow}>
-              <label>
-                Hour {index + 1} ({getHourLabel(index)}:00):
-              </label>
-              <input
-                type="text"
-                placeholder={`Task for Hour ${index + 1}`}
-                value={taskObj.task}
-                onChange={(e) => handleTaskChange(index, e.target.value)}
-                style={styles.input}
-              />
-              <input
-                type="file"
-                accept=".png,.jpg,.jpeg,.pdf,.docx,.xlsx"
-                onChange={(e) => handleFileChange(index, e.target.files[0])}
-                style={styles.fileInput}
-              />
-              {taskObj.uploadedAt && (
-                <span style={styles.uploadTime}>
-                  Uploaded at: {taskObj.uploadedAt.toLocaleTimeString()}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
+          <button
+            onClick={handleSubmit}
+            style={styles.submitButton}
+            onMouseEnter={(e) =>
+              (e.target.style.backgroundColor = styles.submitButtonHover.backgroundColor)
+            }
+            onMouseLeave={(e) =>
+              (e.target.style.backgroundColor = styles.submitButton.backgroundColor)
+            }
+          >
+            Submit
+          </button>
 
-        {/* Submit button */}
-        <button
-          onClick={handleSubmit}
-          style={styles.submitButton}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = styles.submitButtonHover.backgroundColor)}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = styles.submitButton.backgroundColor)}
-        >
-          Submit
-        </button>
-
-        {/* Attendance Indicator */}
-        <div style={styles.attendanceContainer}>
-          <p>Attendance Indicator:</p>
-          <div
-            style={{
-              ...styles.attendanceIndicator,
-              backgroundColor: attendanceIndicator === "green" ? "green" : "red",
-            }}
-          />
+          <div style={styles.attendanceContainer}>
+            <p>Attendance Indicator:</p>
+            <div
+              style={{
+                ...styles.attendanceIndicator,
+                backgroundColor: attendanceIndicator === "green" ? "green" : "red",
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div></>
+    </>
   );
 };
 
@@ -183,10 +206,6 @@ const styles = {
     padding: "10px",
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  taskItem: {
-    padding: "5px 0",
-    borderBottom: "1px solid #ddd",
   },
   taskContainer: {
     display: "flex",

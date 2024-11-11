@@ -6,7 +6,6 @@ import auditImage from "../src/assets/audit.jpg";
 export default function Employ() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -414,7 +413,7 @@ export default function Employ() {
     style={{
     position: 'absolute',
     top: '80px',  // Adjust based on your navbar height
-    left: '85%',
+    left: '87%',
     transform: 'translateX(-50%)',  // Centers the button horizontally
     zIndex: 10,
     padding: '10px 20px',  // Adds padding to the button
