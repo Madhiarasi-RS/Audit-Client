@@ -179,6 +179,7 @@ const AttendanceCircle = ({ attendanceCount }) => {
     >
       <CircularProgressbar
         value={attendanceCount}
+        maxValue={100}
         text={`${attendanceCount}%`}
         styles={buildStyles({
           pathColor: getCircleColor(attendanceCount),
@@ -299,7 +300,6 @@ const AttendanceCircle = ({ attendanceCount }) => {
           <CircularProgressbar value={0} />
         </div>
       )}
-      {!loading && (
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px' }}>
           {employees.map((employee) => (
             <div
@@ -350,7 +350,6 @@ const AttendanceCircle = ({ attendanceCount }) => {
             </div>
           ))}
         </div>
-      )}
       </div>
       <h3 style={{ marginBottom: '20px', fontWeight: 'bold', fontSize: '2rem', color: 'white' }}>Audit Personnel</h3>
           <ul className="list-group">
