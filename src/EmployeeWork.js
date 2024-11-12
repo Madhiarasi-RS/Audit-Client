@@ -3,61 +3,32 @@ import axios from "axios";
 import Navbar from "./Navbar";
 
 const EmployeeWork = () => {
-  // State for storing tasks, proof, and upload time for each hour
   const [tasks, setTasks] = useState(
     Array(8).fill(null).map(() => ({ task: "", proof: null, uploadedAt: null }))
   );
-  const [assignedTasks, setAssignedTasks] = useState([]);
   const [attendanceIndicator, setAttendanceIndicator] = useState("red");
-
-  const [employeeTasks, setEmployeeTasks] = useState({});
+  const [employeeTasks, setEmployeeTasks] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  const apiUrl = "http://localhost:8000"; // Define apiUrl or use a specific URL
+  const apiUrl = "http://localhost:8000"; // Define apiUrl or use your API base URL
 
-  useEffect(() => {
-    const storedTasks = localStorage.getItem("tasks");
-    if (storedTasks) {
-      setEmployeeTasks(JSON.parse(storedTasks));
-    } else {
-      getTasks();
+  // Fetch tasks from database
+  const fetchTasksFromDatabase = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/tasks`);
+      setEmployeeTasks(response.data); // Assuming response contains an array of tasks
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+      alert("Failed to fetch tasks");
     }
-  }, []);
-
-  useEffect(() => {
-    if (Object.keys(employeeTasks).length > 0) {
-      localStorage.setItem("tasks", JSON.stringify(employeeTasks));
-    }
-  }, [employeeTasks]);
-
-  const getTasks = () => {
-    fetch(`${apiUrl}/tasks`)
-      .then((res) => res.json())
-      .then((data) => {
-        const groupedTasks = data.reduce((acc, task) => {
-          const { employeeId } = task;
-          if (!acc[employeeId]) acc[employeeId] = [];
-          acc[employeeId].push(task);
-          return acc;
-        }, {});
-        setEmployeeTasks(groupedTasks);
-      })
-      .catch(() => alert("Failed to fetch tasks"));
   };
 
+  // Load tasks from the database when the component mounts
   useEffect(() => {
-    const fetchAssignedTasks = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/api/adminDashboard/assignedTasks`);
-        setAssignedTasks(response.data);
-      } catch (error) {
-        console.error("Error fetching assigned tasks:", error);
-      }
-    };
-
-    fetchAssignedTasks();
+    fetchTasksFromDatabase();
   }, []);
 
+  // Update the current date and time every second
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDate(new Date());
@@ -91,12 +62,6 @@ const EmployeeWork = () => {
 
   const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
 
-  const getHourLabel = (hourIndex) => {
-    const currentHour = currentDate.getHours();
-    const labelHour = (currentHour + hourIndex) % 24;
-    return labelHour;
-  };
-
   return (
     <>
       <Navbar />
@@ -109,10 +74,10 @@ const EmployeeWork = () => {
 
           <div style={styles.assignedTasks}>
             <h2>Assigned Tasks</h2>
-            {assignedTasks.length > 0 ? (
-              assignedTasks.map((task) => (
+            {employeeTasks.length > 0 ? (
+              employeeTasks.map((task) => (
                 <li key={task._id} className="list-group-item">
-                  <span className="fw-bold">{task.title}</span>
+                  <span className="fw-bold">{task.title}</span>: {task.description}
                 </li>
               ))
             ) : (
