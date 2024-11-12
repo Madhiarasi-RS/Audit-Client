@@ -313,6 +313,15 @@ const AttendanceCircle = ({ attendanceCount }) => {
                 borderRadius: '10px',
                 backgroundColor: '#ffffff',
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                transition: 'transform 0.2s, boxShadow 0.2s', // Smooth transition for hover
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
               }}
             >
               <h2 style={{ marginBottom: '15px', fontWeight: 'bold', fontSize: '18px' }}>{employee.name}</h2>
