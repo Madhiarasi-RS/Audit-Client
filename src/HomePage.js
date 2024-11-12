@@ -50,7 +50,6 @@ function HomePage() {
     },
     homeContainer: {
       display: 'flex',
-   
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
