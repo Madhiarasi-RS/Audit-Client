@@ -278,7 +278,7 @@ const AttendanceCircle = ({ attendanceCount }) => {
         borderRadius: "0px", 
       }}
     >
-      <h1 style={{ color: 'white', fontWeight: 'bold', fontSize: '3rem' }}>Audit Personnel Dashboard</h1>
+      <h1 style={{ color: 'white', fontWeight: 'bold', fontSize: '3rem' }}>Admin Dashboard</h1>
        <div
         style={{
           width: '50%',
