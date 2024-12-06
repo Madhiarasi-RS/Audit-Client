@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
+import Img from './assets/a.jpg';
 
 const EmployeeWork = () => {
   const [tasks, setTasks] = useState(
@@ -129,7 +130,7 @@ const EmployeeWork = () => {
             <div
               style={{
                 ...styles.attendanceIndicator,
-                backgroundColor: attendanceIndicator === "green" ? "green" : "red",
+                backgroundColor: attendanceIndicator === "darkgreen" ? "darkgreen" : "darkred",
               }}
             />
           </div>
@@ -142,7 +143,11 @@ const EmployeeWork = () => {
 // Styles
 const styles = {
   pageBackground: {
-    backgroundColor: "#FFF0F5",
+    backgroundImage: `url(${Img})`, // Use the imported image here
+    backgroundSize: 'cover', 
+   backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
     minHeight: "100vh",
     display: "flex",
     alignItems: "center",
@@ -154,7 +159,7 @@ const styles = {
     maxWidth: "800px",
     width: "100%",
     textAlign: "center",
-    backgroundColor: "#e6f0ff",
+    backgroundColor: "#fff",
     borderRadius: "10px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   },
@@ -167,7 +172,7 @@ const styles = {
   assignedTasks: {
     margin: "20px 0",
     textAlign: "left",
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#536976",
     padding: "10px",
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -184,9 +189,10 @@ const styles = {
     alignItems: "flex-start",
     width: "100%",
     padding: "10px",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#16222a",
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    color:"#fff",
   },
   input: {
     width: "90%",
@@ -206,7 +212,7 @@ const styles = {
   },
   submitButton: {
     padding: "10px 20px",
-    backgroundColor: "#007bff",
+    backgroundColor: "#000",
     color: "#fff",
     border: "none",
     borderRadius: "5px",

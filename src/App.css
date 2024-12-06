@@ -13,9 +13,10 @@
   }
 }
 .gradient-bg{
-  background: #159957; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #159957, #155799); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #159957, #155799); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #536976;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #292E49, #536976);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #292E49, #536976); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }
 .btnclr{
   background: #0F2027;  /* fallback for old browsers */
@@ -23,6 +24,14 @@
   background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   
 }
+.blurred-background {
+  background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent background */
+  backdrop-filter: blur(10px); /* Apply the blur effect */
+  border-radius: 8px; /* Optional: adds rounded corners */
+  padding: 16px; /* Optional: adjust padding */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
+}
+
 .App-header {
   background-color: #2a29296f;
   min-height: 100vh;

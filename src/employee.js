@@ -205,7 +205,7 @@ const styles = {
     </div>
   </nav>
       <div className="row mt-3">
-        <div className="card gradient-bg shadow p-3 mb-3 ">
+        <div className="card blurred-background shadow p-3 mb-3  ">
           <h3 className="text-light">Add Audit Personnel</h3>
           {message && <p className="text-light">{message}</p>}
           <div className="form-group d-flex gap-2 ">
@@ -244,7 +244,7 @@ const styles = {
               className="form-control border-dark"
               type="text"
             />
-            <button className="btn btnclr text-light" onClick={handleSubmit}>
+            <button className="btn btn-dark text-light" onClick={handleSubmit}>
               Submit
             </button>
           </div>
@@ -252,7 +252,7 @@ const styles = {
         </div>
       </div>
       <div className="row mt-3 justify-content-center ">
-        <div className="card shadow p-3 mb-3 col-md-6 gradient-bg">
+        <div className="card shadow p-3 mb-3 col-md-6 blurred-background ">
           <h3 className="text-center text-light">Audit Personnel</h3>
           <ul className="list-group">
             {employees.map((employee) => (
@@ -304,13 +304,13 @@ const styles = {
                   {editId === "-1" || editId !== employee._id ? (
                     <>
                       <button
-                        className="btn btnclr mx-1 text-light"
+                        className="btn btn-dark mx-1 text-light"
                         onClick={() => handleEdit(employee)}
                       >
                         Edit
                       </button>
                       <button
-                        className="btn btnclr text-light"
+                        className="btn btn-dark text-light"
                         onClick={() => handleDelete(employee._id)}
                       >
                         Delete
