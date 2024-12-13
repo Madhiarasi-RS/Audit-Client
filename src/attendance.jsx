@@ -1,42 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-
-// Function to get the circle color based on attendance count
-const getCircleColor = (attendanceCount) => {
-  if (attendanceCount >= 30) return '#4caf50';
-  if (attendanceCount >= 10) return '#ff9800';
-  return '#f44336';
-};
-
-const AttendanceCircle = ({ attendanceCount }) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: '25px',
-        width: '100px',
-        height: '100px',
-        marginBottom: '10px',
-        position: 'relative',
-      }}
-    >
-      <CircularProgressbar
-        value={attendanceCount}
-        text={`${attendanceCount}%`}
-        styles={buildStyles({
-          pathColor: getCircleColor(attendanceCount),
-          textColor: '#000',
-          trailColor: '#e0e0e0',
-          textSize: '16px',
-          pathTransitionDuration: 0.5,
-        })}
-      />
-    </div>
-  );
-};
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const EmployeeDashboard = () => {
   const [employees, setEmployees] = useState([]);
@@ -105,65 +68,80 @@ const EmployeeDashboard = () => {
     }
   };
 
+  const data = employees.map((employee) => ({
+    name: employee.name,
+    attendance: employee.attendanceCount,
+  }));
+
   return (
     <div style={{ padding: '20px', textAlign: 'center' }}>
       <h1 style={{ marginBottom: '20px' }}>Employee Dashboard</h1>
-      {loading && (
-        <div style={{ width: '50px', margin: 'auto' }}>
-          <CircularProgressbar value={0} />
-        </div>
-      )}
-      {!loading && (
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px' }}>
-          {employees.map((employee) => (
-            <div
-              key={employee._id}
-              style={{
-                width: '200px',
-                textAlign: 'center',
-                border: '2px solid #313131',
-                fontSize: '16px',
-                padding: '20px',
-                borderRadius: '10px',
-                backgroundColor: '#ffffff',
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <h2 style={{ marginBottom: '15px', fontWeight: 'bold', fontSize: '18px' }}>{employee.name}</h2>
-              <AttendanceCircle attendanceCount={employee.attendanceCount} />
-              <button
-                onClick={() => updateAttendance(employee._id, true)}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="attendance" fill="#4caf50" />
+            </BarChart>
+          </ResponsiveContainer>
+
+          <div style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+            {employees.map((employee) => (
+              <div
+                key={employee._id}
                 style={{
-                  padding: '8px 15px',
-                  margin: '5px',
-                  cursor: 'pointer',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  fontSize: '14px',
+                  width: '200px',
+                  textAlign: 'center',
+                  border: '2px solid #313131',
+                  fontSize: '16px',
+                  padding: '20px',
+                  borderRadius: '10px',
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                Increase
-              </button>
-              <button
-                onClick={() => decreaseAttendance(employee._id)}
-                style={{
-                  padding: '8px 15px',
-                  margin: '5px',
-                  cursor: 'pointer',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  fontSize: '14px',
-                }}
-              >
-                Decrease
-              </button>
-            </div>
-          ))}
-        </div>
+                <h2 style={{ marginBottom: '15px', fontWeight: 'bold', fontSize: '18px' }}>{employee.name}</h2>
+                <p style={{ fontSize: '20px' }}>
+                  {employee.attendanceCount >= 30 ? '✅' : '❌'} {employee.attendanceCount}%
+                </p>
+                <button
+                  onClick={() => updateAttendance(employee._id, true)}
+                  style={{
+                    padding: '8px 15px',
+                    margin: '5px',
+                    cursor: 'pointer',
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    fontSize: '14px',
+                  }}
+                >
+                  Increase
+                </button>
+                <button
+                  onClick={() => decreaseAttendance(employee._id)}
+                  style={{
+                    padding: '8px 15px',
+                    margin: '5px',
+                    cursor: 'pointer',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    fontSize: '14px',
+                  }}
+                >
+                  Decrease
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
