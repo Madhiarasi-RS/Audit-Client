@@ -22,7 +22,7 @@ export default function Employ() {
   const [editDob, setEditDOB] = useState("");
   const [editGender, setEditGender] = useState("");
 
-  const apiUrl = "http://localhost:8000";
+  const apiUrl = "https://audit-server-syib.onrender.com";
   const navigate = useNavigate();
 
   const handleLoginClick = () => {

@@ -11,7 +11,7 @@ const EmployeeWork = () => {
   const [employeeTasks, setEmployeeTasks] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  const apiUrl = "http://localhost:8000"; // Define apiUrl or use your API base URL
+  const apiUrl = "https://audit-server-syib.onrender.com"; // Define apiUrl or use your API base URL
 
   // Fetch tasks from database
   const fetchTasksFromDatabase = async () => {

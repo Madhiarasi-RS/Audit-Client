@@ -48,7 +48,7 @@ const EmployeeDashboard = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch('http://localhost:8000/employees');
+      const response = await fetch('https://audit-server-syib.onrender.com/employees');
       const data = await response.json();
       setEmployees(data);
       setLoading(false);
@@ -61,7 +61,7 @@ const EmployeeDashboard = () => {
   const updateAttendance = async (employeeId, increase) => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/employees/${employeeId}/attendance`, {
+      const response = await fetch(`https://audit-server-syib.onrender.com/employees/${employeeId}/attendance`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ increase }),
@@ -82,7 +82,7 @@ const EmployeeDashboard = () => {
   const decreaseAttendance = async (employeeId) => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/employees/${employeeId}/attendance`, {
+      const response = await fetch(`https://audit-server-syib.onrender.com/employees/${employeeId}/attendance`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ decrease: true }),
@@ -169,4 +169,4 @@ const EmployeeDashboard = () => {
   );
 };
 
-export default EmployeeDashboard; 
+export default EmployeeDashboard;

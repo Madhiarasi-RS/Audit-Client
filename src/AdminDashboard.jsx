@@ -16,7 +16,7 @@ export default function Employ() {
   const [editDescription, setEditDescription] = useState("");
   const [employeeTasks, setEmployeeTasks] = useState({});
 
-  const apiUrl = "http://localhost:8000";
+  const apiUrl = "https://audit-server-syib.onrender.com";
   const navigate = useNavigate();
 
   // Assign work to a specific employee
